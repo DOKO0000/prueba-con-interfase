@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificación de Matrícula</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+            flex-direction: column;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        input[type="text"] {
+            padding: 10px;
+            margin: 10px 0;
+            width: 200px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .error {
+            color: red;
+            margin-top: 10px;
+        }
+        .image-container {
+            margin-top: 20px;
+        }
+        .image-container img {
+            max-width: 100%;
+            border-radius: 8px;
+        }
+        .confirmation {
+            margin-top: 10px;
+        }
+        .confirmation button {
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Verificación de Matrícula</h1>
+        <input type="text" id="matricula" placeholder="Ingresa tu matrícula">
+        <button onclick="verificarMatricula()">Verificar</button>
+        <p class="error" id="error-message"></p>
+    </div>
+
+    <div class="image-container" id="image-container" style="display: none;">
+        <img id="foto" alt="Foto de la matrícula">
+        <div class="confirmation">
+            <p>¿Esta persona eres tú?</p>
+            <button onclick="confirmar(true)">Sí</button>
+            <button onclick="confirmar(false)">No</button>
+        </div>
+    </div>
+
+    <script>
+        function verificarMatricula() {
+            const matricula = document.getElementById('matricula').value;
+            const errorMessage = document.getElementById('error-message');
+            const imageContainer = document.getElementById('image-container');
+            const foto = document.getElementById('foto');
+            errorMessage.textContent = '';
+            imageContainer.style.display = 'none';
+
+            if (!matricula) {
+                errorMessage.textContent = 'Por favor, ingresa una matrícula.';
+                return;
+            }
+
+            const url = `https://apps-3.cobachbc.edu.mx/CompetenciasGenericas/Ajax/GetFotoCredencial?pMatricula=${matricula}`;
+
+            // Crear una imagen para verificar si existe
+            const img = new Image();
+            img.src = url;
+
+            img.onload = function() {
+                // Si la imagen se carga correctamente, mostrarla
+                foto.src = url;
+                imageContainer.style.display = 'block';
+            };
+
+            img.onerror = function() {
+                // Si la imagen no se carga, mostrar un mensaje de error
+                errorMessage.textContent = 'Matrícula no válida. Por favor, verifica e intenta nuevamente.';
+            };
+        }
+
+        function confirmar(esValido) {
+            if (esValido) {
+                // Redirigir a la página DOKO con la matrícula como parámetro
+                const matricula = document.getElementById('matricula').value;
+                window.location.href = `DOKO_PRUEBA.html?matricula=${matricula}`;
+            } else {
+                // Reiniciar la página si la validación falla
+                window.location.reload();
+            }
+        }
+    </script>
+</body>
+</html>

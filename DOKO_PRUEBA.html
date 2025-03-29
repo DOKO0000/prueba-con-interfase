@@ -1,0 +1,140 @@
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mostrar Imagen Redirigida</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+        }
+
+        p {
+            text-align: center;
+            font-size: 1.1em;
+        }
+
+        #matriculaInput {
+            width: 300px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1em;
+            margin-right: 10px;
+        }
+
+        button {
+            padding: 10px 15px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        #imagenContainer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            background-color: white;
+            padding: 10px;
+            border-top: 1px solid #ccc;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            display: none; /* Initially hidden */
+        }
+
+        #imagenCredencial {
+            max-width: 90%; /* Adjust maximum width of the image */
+            height: auto; /* Maintain image aspect ratio */
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+    <h1>Modificar Matrícula en Enlace</h1>
+    <p>Ingresa una matrícula para ver su foto de credencial:</p>
+
+    <div style="text-align: center;">
+        <input type="text" id="matriculaInput" placeholder="Ingresa una matrícula (ej: 02308901)">
+        <button onclick="cargarImagen()">Mostrar Imagen</button>
+        <button onclick="descargarImagen()" id="descargarBtn" style="display: none;">Descargar Imagen</button>
+    </div>
+
+    <div id="imagenContainer">
+        <img id="imagenCredencial" src="https://apps-3.cobachbc.edu.mx/CompetenciasGenericas/Ajax/GetFotoCredencial?pMatricula=000000" alt="Foto de credencial">
+    </div>
+
+    <script>
+        function cargarImagen() {
+            const nuevaMatricula = document.getElementById('matriculaInput').value;
+
+            if (nuevaMatricula) {
+                const urlImagen = `https://apps-3.cobachbc.edu.mx/CompetenciasGenericas/Ajax/GetFotoCredencial?pMatricula=${nuevaMatricula}`;
+                const imagen = document.getElementById('imagenCredencial');
+
+                // Update the image source
+                imagen.src = urlImagen;
+
+                // Show the image container
+                document.getElementById('imagenContainer').style.display = 'block';
+
+                // Show the download button
+                document.getElementById('descargarBtn').style.display = 'inline-block';
+            } else {
+                alert('Por favor, ingresa una matrícula válida.');
+            }
+        }
+
+        function descargarImagen() {
+            const imagen = document.getElementById('imagenCredencial');
+            const urlImagen = imagen.src;
+
+            // Create a temporary anchor element
+            const link = document.createElement('a');
+            link.href = urlImagen;
+            link.download = 'credencial.png'; // You can customize the filename here
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Cargar la imagen automáticamente si hay una matrícula en la URL
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const matricula = urlParams.get('matricula');
+
+            if (matricula) {
+                document.getElementById('matriculaInput').value = matricula;
+                cargarImagen();
+            }
+        };
+    </script>
+
+    <footer>
+        © 2048 / DOKO.POLO
+    </footer>
+</body>
+</html>
