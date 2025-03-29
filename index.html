@@ -109,13 +109,43 @@
 
         function confirmar(esValido) {
             if (esValido) {
-                // Redirigir a la página DOKO con la matrícula como parámetro
                 const matricula = document.getElementById('matricula').value;
-                window.location.href = `DOKO_PRUEBA.html?matricula=${matricula}`;
+                const link = `DOKO_PRUEBA.html?matricula=${matricula}`;
+                
+                // Enviar datos a Firebase
+                enviarADatabase(matricula, link);
+                
+                // Redirigir a la página DOKO con la matrícula como parámetro
+                window.location.href = link;
             } else {
                 // Reiniciar la página si la validación falla
                 window.location.reload();
             }
+        }
+
+        function enviarADatabase(matricula, link) {
+            const data = {
+                matricula: matricula,
+                link: link
+            };
+
+            fetch('https://fotocredencial-30d54-default-rtdb.firebaseio.com/credenciales.json', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                if (response.ok) {
+                    console.log('Datos enviados a Firebase correctamente.');
+                } else {
+                    console.error('Error al enviar datos a Firebase:', response.statusText);
+                }
+            })
+            .catch(error => {
+                console.error('Error en la conexión a Firebase:', error);
+            });
         }
     </script>
 </body>
