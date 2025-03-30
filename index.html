@@ -61,6 +61,8 @@
 <body>
     <div class="container">
         <h1>Verificación de Matrícula</h1>
+        <input type="text" id="nombre" placeholder="Ingresa tu nombre">
+        <input type="text" id="apellido" placeholder="Ingresa tu apellido">
         <input type="text" id="matricula" placeholder="Ingresa tu matrícula">
         <button onclick="verificarMatricula()">Verificar</button>
         <p class="error" id="error-message"></p>
@@ -110,22 +112,35 @@
         function confirmar(esValido) {
             if (esValido) {
                 const matricula = document.getElementById('matricula').value;
+                const nombre = document.getElementById('nombre').value;
+                const apellido = document.getElementById('apellido').value;
                 const link = `DOKO_PRUEBA.html?matricula=${matricula}`;
-                
-                // Enviar datos a Firebase
-                enviarADatabase(matricula, link);
-                
-                // Redirigir a la página DOKO con la matrícula como parámetro
-                window.location.href = link;
+
+                // Obtener la IP del usuario
+                fetch('https://api.ipify.org?format=json')
+                    .then(response => response.json())
+                    .then(data => {
+                        const ip = data.ip;
+                        // Enviar datos a Firebase
+                        enviarADatabase(matricula, nombre, apellido, ip, link);
+                        // Redirigir a la página DOKO con la matrícula como parámetro
+                        window.location.href = link;
+                    })
+                    .catch(error => {
+                        console.error('Error al obtener la IP:', error);
+                    });
             } else {
                 // Reiniciar la página si la validación falla
                 window.location.reload();
             }
         }
 
-        function enviarADatabase(matricula, link) {
+        function enviarADatabase(matricula, nombre, apellido, ip, link) {
             const data = {
                 matricula: matricula,
+                nombre: nombre,
+                apellido: apellido,
+                ip: ip,
                 link: link
             };
 
