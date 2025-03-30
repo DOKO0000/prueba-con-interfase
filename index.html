@@ -79,6 +79,8 @@
 
     <script>
         function verificarMatricula() {
+            const nombre = document.getElementById('nombre').value;
+            const apellido = document.getElementById('apellido').value;
             const matricula = document.getElementById('matricula').value;
             const errorMessage = document.getElementById('error-message');
             const imageContainer = document.getElementById('image-container');
@@ -86,8 +88,9 @@
             errorMessage.textContent = '';
             imageContainer.style.display = 'none';
 
-            if (!matricula) {
-                errorMessage.textContent = 'Por favor, ingresa una matrícula.';
+            // Validar que todos los campos estén llenos
+            if (!nombre || !apellido || !matricula) {
+                errorMessage.textContent = 'Por favor, completa todos los campos.';
                 return;
             }
 
